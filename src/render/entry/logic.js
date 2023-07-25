@@ -19,7 +19,10 @@ function logic(spec) {
 }
 
 function communicationProtocol(spec) {
-  if (['ws:', 'wss'].includes(spec.request.address.slice(0, 3))) {
+  if (
+    spec.request.address &&
+    ['ws:', 'wss'].includes(spec.request.address.slice(0, 3))
+  ) {
     return websocket(spec)
   }
   return request(spec.request)
