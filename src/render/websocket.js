@@ -123,7 +123,6 @@ function pre(factor) {
 }
 
 function main(factor) {
-  let ws_send = ws_send_messages(factor.messages)
   if (factor.compact) {
     const list = factor.args.join(`, `)
     return `ws.${factor.call}(${list});\nsleep(3.8);`
