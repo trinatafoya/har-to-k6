@@ -29,6 +29,7 @@ function entrySpec() {
     checks: new Map(),
     variables: new Map(),
     state: entryState(),
+    webSocketMessages: [],
   }
 }
 
@@ -44,6 +45,7 @@ function imports() {
     group: false,
     check: false,
     http: false,
+    websocket: false,
 
     // jslib.k6.io
     URLSearchParams: false,
@@ -71,6 +73,20 @@ function postState() {
 function queryState() {
   return {
     variable: null,
+  }
+}
+
+function websocketFactor() {
+  return {
+    method: null,
+    capacity: null,
+    address: null,
+    body: null,
+    headers: null,
+    cookies: null,
+    options: null,
+    messages: null,
+    pre: [],
   }
 }
 
@@ -132,6 +148,7 @@ module.exports = {
   paramsState,
   postState,
   queryState,
+  websocketFactor,
   requestFactor,
   requestSpec,
   requestState,

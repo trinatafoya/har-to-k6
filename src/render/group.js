@@ -13,7 +13,7 @@ function group(spec) {
       flow = withSleep(flow, spec.page.sleep)
     }
 
-    return flow.filter((item) => item).join(`\n`)
+    return flow.filter(item => item).join(`\n`)
   } else {
     return body(spec.id, spec)
   }

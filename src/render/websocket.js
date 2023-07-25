@@ -1,40 +1,29 @@
-const address = require('./address')
-const cookies = require('./cookies')
 const headers = require('./headers')
+const cookies = require('./cookies')
+const address = require('./address')
 const indent = require('./indent')
 const object = require('./object')
 const post = require('./post')
 const text = require('./text')
 const generateMultipartFixedPre = require('./post/multipart/fixed/pre')
-const { requestFactor: makeRequestFactor } = require('../make')
+const { websocketFactor: makeWebsocketFactor } = require('../make')
 const { PostSpecies } = require('../enum')
 
-function request(spec) {
-  const factor = analyze(spec)
-  return render(factor)
-}
-
-function analyze(spec) {
-  const factor = makeRequestFactor()
-  factor.call = call(spec)
-  factor.method = method(spec)
-  factor.capacity = capacity(spec)
-  address(spec, factor)
-  body(spec, factor)
-  factor.headers = headers(spec.headers)
-  factor.cookies = cookies(spec.cookies)
+function websocket(spec) {
+  let request = spec.request
+  const factor = makeWebsocketFactor()
+  factor.call = 'connect'
+  factor.method = method(request)
+  factor.capacity = capacity(request)
+  address(request, factor)
+  body(request, factor)
+  factor.headers = headers(request.headers)
+  factor.cookies = cookies(request.cookies)
   factor.options = options(factor)
+  factor.messages = spec.webSocketMessages
   factor.args = args(factor)
   factor.compact = compact(factor)
-  return factor
-}
-
-function call(spec) {
-  if (shortcut.has(spec.method)) {
-    return shortcut.get(spec.method)
-  } else {
-    return 'request'
-  }
+  return render(factor)
 }
 
 function method(spec) {
@@ -64,6 +53,46 @@ function body(spec, factor) {
   }
 }
 
+function ws_send_messages(messages) {
+  let send_messages = [' function (socket) {']
+  send_messages.push("\tsocket.on('open', function () {")
+  for (const message of messages) {
+    if (message.type === 'send') {
+      send_messages.push(`\t\tsocket.send(${JSON.stringify(message.data)})`)
+    }
+  }
+  send_messages.push(
+    ...[
+      '\t\tsleep(3)',
+      '\t\tsocket.close()',
+      '\t})',
+      "\tsocket.on('error', function (e) {",
+      '\t\tfail(`WebSocket failed: ${e.error()}`);',
+      '\t})\n}\n',
+    ]
+  )
+  return send_messages.join('\n')
+}
+
+function args(factor) {
+  const items = []
+  items.push(factor.address)
+  if (factor.body) {
+    items.push(factor.body)
+  } else if (factor.capacity && factor.options) {
+    // Body argument placeholder necessary
+    items.push(`null`)
+  }
+  if (factor.options) {
+    items.push(factor.options)
+  }
+  if (factor.messages) {
+    items.push(ws_send_messages(factor.messages))
+  }
+
+  return items
+}
+
 function options(factor) {
   if (factor.headers || factor.cookies) {
     const entries = []
@@ -79,32 +108,10 @@ function options(factor) {
   }
 }
 
-function args(factor) {
-  const items = []
-  if (factor.call === 'request') {
-    items.push(factor.method)
-  }
-  items.push(factor.address)
-  if (factor.body) {
-    items.push(factor.body)
-  } else if (factor.capacity && factor.options) {
-    // Body argument placeholder necessary
-    items.push(`null`)
-  }
-  if (factor.options) {
-    items.push(factor.options)
-  }
-  return items
-}
-
 function compact(factor) {
   return (
     !factor.capacity || factor.args.length === 1 || factor.args[1] === 'null'
   )
-}
-
-function render(factor) {
-  return [pre(factor), main(factor)].filter(item => item).join(`\n`)
 }
 
 function pre(factor) {
@@ -116,27 +123,24 @@ function pre(factor) {
 }
 
 function main(factor) {
+  let ws_send = ws_send_messages(factor.messages)
   if (factor.compact) {
     const list = factor.args.join(`, `)
-    return `response = http.${factor.call}(${list});`
+    return `ws.${factor.call}(${list});\nsleep(3.8);`
   } else {
     const list = factor.args.join(`,\n`)
     return (
       '' +
-      `response = http.${factor.call}(
+      `ws.${factor.call}(
 ${indent(list)}
-);`
+);
+sleep(3.8)`
     )
   }
 }
 
-// HTTP method to k6 shortcut method
-const shortcut = new Map()
-  .set('DELETE', 'del')
-  .set('GET', 'get')
-  .set('OPTIONS', 'options')
-  .set('PATCH', 'patch')
-  .set('POST', 'post')
-  .set('PUT', 'put')
+function render(factor) {
+  return [pre(factor), main(factor)].filter(item => item).join(`\n`)
+}
 
-module.exports = request
+module.exports = websocket

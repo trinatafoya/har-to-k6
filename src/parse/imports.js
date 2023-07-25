@@ -15,11 +15,11 @@ function imports(archive, result) {
     result.imports.sleep = true
     const entries = archive.log.entries
 
-    if (entries.find((entry) => entry.pageref)) {
+    if (entries.find(entry => entry.pageref)) {
       result.imports.group = true
     }
 
-    if (entries.find((entry) => entry.checks && entry.checks.length)) {
+    if (entries.find(entry => entry.checks && entry.checks.length)) {
       result.imports.check = true
     }
 
@@ -42,7 +42,19 @@ function imports(archive, result) {
     if (result.flow.find(MimeBuilderFlowItem)) {
       result.imports.MimeBuilder = true
     }
+
+    if (webSocketItem(entries)) {
+      result.imports.websocket = true
+    }
   }
+}
+
+function webSocketItem(entries) {
+  // This function checkes to see if the request is a ws or wss
+  //  request to make sure imports has websocket true
+  const check = ({ request }) =>
+    ['ws:', 'wss'].includes(request.url.slice(0, 3))
+  return entries.find(check)
 }
 
 function jsonPathEntry(entry) {

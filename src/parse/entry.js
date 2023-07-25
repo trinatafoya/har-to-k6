@@ -23,8 +23,19 @@ function entry(node, result) {
   if (node.variables) {
     variables(node.variables, spec.variables)
   }
+  if (node._webSocketMessages) {
+    // capture all the websocket messages for later use connecting to the websocket
+    webSockets(node, spec)
+  }
+
   state(spec)
   result.entries.push(spec)
+}
+
+function webSockets(node, spec) {
+  for (const item of node._webSocketMessages) {
+    spec.webSocketMessages.push(item)
+  }
 }
 
 module.exports = entry

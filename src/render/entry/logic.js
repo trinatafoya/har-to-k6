@@ -1,11 +1,12 @@
 const checks = require('../checks')
 const request = require('../request')
+const websocket = require('../websocket')
 const variables = require('../variables')
 const withSleep = require('../withSleep')
 
 function logic(spec) {
   let flow = [
-    request(spec.request),
+    communicationProtocol(spec),
     checks(spec.checks),
     variables(spec.variables),
   ]
@@ -14,7 +15,14 @@ function logic(spec) {
     flow = withSleep(flow, spec.sleep)
   }
 
-  return flow.filter((item) => item).join(`\n`)
+  return flow.filter(item => item).join(`\n`)
+}
+
+function communicationProtocol(spec) {
+  if (['ws:', 'wss'].includes(spec.request.address.slice(0, 3))) {
+    return websocket(spec)
+  }
+  return request(spec.request)
 }
 
 module.exports = logic
