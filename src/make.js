@@ -29,6 +29,7 @@ function entrySpec() {
     checks: new Map(),
     variables: new Map(),
     state: entryState(),
+    timeConnected: 0,
     webSocketMessages: [],
   }
 }
@@ -86,6 +87,7 @@ function websocketFactor() {
     cookies: null,
     options: null,
     messages: null,
+    timeAlive: 0,
     pre: [],
   }
 }

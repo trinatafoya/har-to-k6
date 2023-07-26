@@ -12,6 +12,7 @@ const { PostSpecies } = require('../enum')
 function websocket(spec) {
   let request = spec.request
   const factor = makeWebsocketFactor()
+  factor.timeAlive = spec.timeConnected
   factor.call = 'connect'
   factor.method = method(request)
   factor.capacity = capacity(request)
@@ -53,7 +54,8 @@ function body(spec, factor) {
   }
 }
 
-function ws_send_messages(messages) {
+function ws_send_messages(factor) {
+  let messages = factor.messages
   let send_messages = [' function (socket) {']
   send_messages.push("socket.on('open', function () {")
   for (const message of messages) {
@@ -63,7 +65,7 @@ function ws_send_messages(messages) {
   }
   send_messages.push(
     ...[
-      'sleep(3)',
+      `sleep(${factor.timeAlive})`,
       'socket.close()',
       '})',
       "socket.on('error', function (e) {",
@@ -87,7 +89,7 @@ function args(factor) {
     items.push(factor.options)
   }
   if (factor.messages) {
-    items.push(ws_send_messages(factor.messages))
+    items.push(ws_send_messages(factor))
   }
 
   return items

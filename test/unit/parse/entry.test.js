@@ -23,6 +23,7 @@ test.serial('basic', (t) => {
       variables: new Map(),
       sleep: null,
       state: { expanded: true },
+      timeConnected: 0,
       webSocketMessages: [],
     },
   ])
