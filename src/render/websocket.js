@@ -125,15 +125,14 @@ function pre(factor) {
 function main(factor) {
   if (factor.compact) {
     const list = factor.args.join(`, `)
-    return `ws.${factor.call}(${list});\nsleep(3.8);`
+    return `ws.${factor.call}(${list});`
   } else {
     const list = factor.args.join(`,\n`)
     return (
       '' +
       `ws.${factor.call}(
 ${indent(list)}
-);
-sleep(3.8)`
+);`
     )
   }
 }
