@@ -27,7 +27,7 @@ function external(entry, items) {
 function grouped(page, result, processed, items) {
   if (!processed.has(page)) {
     processed.add(page)
-    const entries = result.entries.filter(entry => entry.page === page)
+    const entries = result.entries.filter((entry) => entry.page === page)
     const item = {
       type: FlowItemType.Group,
       id: page,

@@ -14,9 +14,7 @@ function entry(spec) {
  */
 function expanded(spec) {
   return (
-    spec.request.state.post.species !== PostSpecies.Empty ||
-    spec.checks.size ||
-    spec.variables.size
+    spec.request.state.post.species !== PostSpecies.Empty || spec.checks.size || spec.variables.size
   )
 }
 

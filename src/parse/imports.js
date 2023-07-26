@@ -15,11 +15,11 @@ function imports(archive, result) {
     result.imports.sleep = true
     const entries = archive.log.entries
 
-    if (entries.find(entry => entry.pageref)) {
+    if (entries.find((entry) => entry.pageref)) {
       result.imports.group = true
     }
 
-    if (entries.find(entry => entry.checks && entry.checks.length)) {
+    if (entries.find((entry) => entry.checks && entry.checks.length)) {
       result.imports.check = true
     }
 
