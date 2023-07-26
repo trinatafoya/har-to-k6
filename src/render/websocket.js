@@ -55,20 +55,20 @@ function body(spec, factor) {
 
 function ws_send_messages(messages) {
   let send_messages = [' function (socket) {']
-  send_messages.push("\tsocket.on('open', function () {")
+  send_messages.push("socket.on('open', function () {")
   for (const message of messages) {
     if (message.type === 'send') {
-      send_messages.push(`\t\tsocket.send(${JSON.stringify(message.data)})`)
+      send_messages.push(`socket.send(${JSON.stringify(message.data)})`)
     }
   }
   send_messages.push(
     ...[
-      '\t\tsleep(3)',
-      '\t\tsocket.close()',
-      '\t})',
-      "\tsocket.on('error', function (e) {",
-      '\t\tfail(`WebSocket failed: ${e.error()}`);',
-      '\t})\n}\n',
+      'sleep(3)',
+      'socket.close()',
+      '})',
+      "socket.on('error', function (e) {",
+      'fail(`WebSocket failed: ${e.error()}`);',
+      '})\n}\n',
     ]
   )
   return send_messages.join('\n')
