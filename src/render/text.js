@@ -15,7 +15,7 @@ function resolved(value) {
   if (typeof value === 'string') {
     return variable.test(value)
   } else {
-    return value.findIndex(item => variable.test(item)) !== -1
+    return value.findIndex((item) => variable.test(item)) !== -1
   }
 }
 

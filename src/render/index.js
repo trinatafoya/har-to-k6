@@ -3,8 +3,7 @@ const root = require('./root')
 
 function render(result, imports) {
   const raw = root(result, imports)
-  let x = prettify(raw)
-  return x
+  return prettify(raw)
 }
 
 module.exports = render

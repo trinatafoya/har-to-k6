@@ -15,7 +15,7 @@ function logic(spec) {
     flow = withSleep(flow, spec.sleep)
   }
 
-  return flow.filter(item => item).join(`\n`)
+  return flow.filter((item) => item).join(`\n`)
 }
 
 function communicationProtocol(spec) {

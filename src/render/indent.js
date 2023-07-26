@@ -1,7 +1,7 @@
 function indent(text) {
   return text
     .split('\n')
-    .map(line => (line ? `  ${line}` : ``))
+    .map((line) => (line ? `  ${line}` : ``))
     .join('\n')
 }
 

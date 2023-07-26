@@ -104,7 +104,7 @@ function compact(factor) {
 }
 
 function render(factor) {
-  return [pre(factor), main(factor)].filter(item => item).join(`\n`)
+  return [pre(factor), main(factor)].filter((item) => item).join(`\n`)
 }
 
 function pre(factor) {
