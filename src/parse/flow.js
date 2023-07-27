@@ -4,7 +4,9 @@ const { FlowItemType } = require('../enum')
 function flow(result, options) {
   const processed = new Set()
   for (const entry of result.entries) {
-    entry.addSleep = options.addSleep
+    if (options) {
+      entry.addSleep = options.addSleep
+    }
     item(entry, result, processed, result.flow)
   }
 }

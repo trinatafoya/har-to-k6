@@ -25,6 +25,7 @@ test.serial('basic', (t) => {
       state: { expanded: true },
       timeConnected: 0,
       webSocketMessages: [],
+      addSleep: false,
     },
   ])
   t.true(request.calledOnce)
