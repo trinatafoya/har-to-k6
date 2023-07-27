@@ -8,7 +8,7 @@ const pkginfo = require('pkginfo')
 const { DEFAULT_CLI_OPTIONS } = require('../src/constants')
 const { VError } = require('verror')
 
-class CommandLineError extends VError {}
+class CommandLineError extends VError { }
 const BOM_REGEX = /^\uFEFF/
 
 pkginfo(module, 'version')
@@ -96,9 +96,8 @@ function success(output, log) {
 function inform(error, log) {
   log.error(`${summarize(error)}:`)
   const source = cause(error)
-  const message = `${source.message}${
-    source.path ? `, at path: ${source.path}` : ''
-  }`
+  const message = `${source.message}${source.path ? `, at path: ${source.path}` : ''
+    }`
 
   log.error(chalk.red(message))
   log.debug(source.stack)

@@ -13,6 +13,7 @@ function websocket(spec) {
   let request = spec.request
   const factor = makeWebsocketFactor()
   factor.timeAlive = spec.timeConnected
+  factor.addSleep = spec.addSleep
   factor.call = 'connect'
   factor.method = method(request)
   factor.capacity = capacity(request)
@@ -63,9 +64,14 @@ function ws_send_messages(factor) {
       send_messages.push(`socket.send(${JSON.stringify(message.data)})`)
     }
   }
+  if (factor.addSleep) {
+    send_messages.push(
+      `sleep(${factor.timeAlive})`,
+    )
+  }
+
   send_messages.push(
     ...[
-      `sleep(${factor.timeAlive})`,
       'socket.close()',
       '})',
       "socket.on('error', function (e) {",

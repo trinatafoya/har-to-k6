@@ -31,6 +31,7 @@ function entrySpec() {
     state: entryState(),
     timeConnected: 0,
     webSocketMessages: [],
+    addSleep: false,
   }
 }
 
@@ -137,6 +138,7 @@ function result() {
     declares: new Set(),
     exportAs: '',
     defaultExport: true,
+    addSleep: false,
   }
 }
 
