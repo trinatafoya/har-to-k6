@@ -38,9 +38,11 @@ function getFactor(request, spec) {
 }
 
 function changeMessageTimes(messages) {
+  /// calculates when to sleep between messages
   let firstTimeStartsAtZero = 0
+  let firstIndexSetToZero = 0
   let messagesWithNewTimes = JSON.parse(JSON.stringify(messages))
-  messagesWithNewTimes[0].time = firstTimeStartsAtZero
+  messagesWithNewTimes[firstIndexSetToZero].time = firstTimeStartsAtZero
   for (let i = 1; i < messages.length; i++){
     messagesWithNewTimes[i].time = messages[i].time - messages[i - 1].time
   }
@@ -48,6 +50,7 @@ function changeMessageTimes(messages) {
 }
 
 function timeAlive(timeConnected, messages) {
+  /// calculates length of time when websocket is open minus the total time the messages took to run before closeing the socket
   let firstMessageTime = messages[0].time
   let finalMessageTime = messages[messages.length - 1].time
   let totalTimeMessagesTook = finalMessageTime - firstMessageTime
