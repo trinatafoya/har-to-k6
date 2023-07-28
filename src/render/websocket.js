@@ -3,7 +3,6 @@ const cookies = require('./cookies')
 const address = require('./address')
 const object = require('./object')
 const { websocketFactor: makeWebsocketFactor } = require('../make')
-const { PostSpecies } = require('../enum')
 
 function websocket(spec) {
   let factor = getFactor(spec.request, spec)
