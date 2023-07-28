@@ -87,7 +87,6 @@ function websocketFactor() {
     options: null,
     messages: null,
     timeAlive: 0,
-    pre: [],
   }
 }
 
