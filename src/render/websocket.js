@@ -10,10 +10,20 @@ const { websocketFactor: makeWebsocketFactor } = require('../make')
 const { PostSpecies } = require('../enum')
 
 function websocket(spec) {
-  let request = spec.request
+  let factor = getFactor(spec.request, spec)
+  return render(factor)
+}
+
+function getFactor(request, spec) {
   const factor = makeWebsocketFactor()
-  factor.timeAlive = spec.timeConnected
-  factor.addSleep = spec.addSleep
+  if (spec.addSleep) {
+    factor.timeAlive = timeAlive(spec.timeConnected, spec.webSocketMessages)
+    factor.addSleep = spec.addSleep
+    factor.messages = changeMessageTimes(spec.webSocketMessages)
+  }
+  else{
+    factor.messages = spec.webSocketMessages
+  }
   factor.call = 'connect'
   factor.method = method(request)
   factor.capacity = capacity(request)
@@ -22,10 +32,27 @@ function websocket(spec) {
   factor.headers = headers(request.headers)
   factor.cookies = cookies(request.cookies)
   factor.options = options(factor)
-  factor.messages = spec.webSocketMessages
   factor.args = args(factor)
   factor.compact = compact(factor)
-  return render(factor)
+  return factor
+}
+
+function changeMessageTimes(messages) {
+  let firstTimeStartsAtZero = 0
+  let messagesWithNewTimes = JSON.parse(JSON.stringify(messages))
+  messagesWithNewTimes[0].time = firstTimeStartsAtZero
+  for (let i = 1; i < messages.length; i++){
+    messagesWithNewTimes[i].time = messages[i].time - messages[i - 1].time
+  }
+  return messagesWithNewTimes
+}
+
+function timeAlive(timeConnected, messages) {
+  let firstMessageTime = messages[0].time
+  let finalMessageTime = messages[messages.length - 1].time
+  let totalTimeMessagesTook = finalMessageTime - firstMessageTime
+  return timeConnected - totalTimeMessagesTook
+
 }
 
 function method(spec) {
@@ -61,10 +88,13 @@ function ws_send_messages(factor) {
   send_messages.push("socket.on('open', function () {")
   for (const message of messages) {
     if (message.type === 'send') {
+      if (factor.addSleep && message.time > 0) {
+        send_messages.push(`sleep(${message.time})`)
+      }
       send_messages.push(`socket.send(${JSON.stringify(message.data)})`)
     }
   }
-  if (factor.addSleep) {
+  if (factor.addSleep && factor.timeAlive > 0) {
     send_messages.push(
       `sleep(${factor.timeAlive})`,
     )
