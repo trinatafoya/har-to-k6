@@ -81,9 +81,7 @@ function queryState() {
 function websocketFactor() {
   return {
     method: null,
-    capacity: null,
     address: null,
-    body: null,
     headers: null,
     cookies: null,
     options: null,
