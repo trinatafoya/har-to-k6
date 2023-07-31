@@ -31,22 +31,28 @@ function getFactor(request, spec) {
 
 function changeMessageTimes(messages) {
   /// calculates when to sleep between messages
-  let firstTimeStartsAtZero = 0
-  let firstIndexSetToZero = 0
-  let messagesWithNewTimes = JSON.parse(JSON.stringify(messages))
-  messagesWithNewTimes[firstIndexSetToZero].time = firstTimeStartsAtZero
-  for (let i = 1; i < messages.length; i++){
-    messagesWithNewTimes[i].time = messages[i].time - messages[i - 1].time
-  }
-  return messagesWithNewTimes
+  if (messages){
+    let firstTimeStartsAtZero = 0
+    let firstIndexSetToZero = 0
+    let messagesWithNewTimes = JSON.parse(JSON.stringify(messages))
+    messagesWithNewTimes[firstIndexSetToZero].time = firstTimeStartsAtZero
+    for (let i = 1; i < messages.length; i++){
+      messagesWithNewTimes[i].time = messages[i].time - messages[i - 1].time
+    }
+    return messagesWithNewTimes
+ }
 }
 
 function timeAlive(timeConnected, messages) {
-  /// calculates length of time when websocket is open minus the total time the messages took to run before closeing the socket
-  let firstMessageTime = messages[0].time
-  let finalMessageTime = messages[messages.length - 1].time
-  let totalTimeMessagesTook = finalMessageTime - firstMessageTime
-  return timeConnected - totalTimeMessagesTook
+  /// calculates length of time when websocket is open minus the total time the messages took to run before closing the socket
+  time = timeConnected
+  if (messages.length > 1) {
+    let firstMessageTime = messages[0].time
+    let finalMessageTime = messages[messages.length - 1].time
+    let totalTimeMessagesTook = finalMessageTime - firstMessageTime
+    time = timeConnected - totalTimeMessagesTook
+  }
+  return time
 
 }
 
@@ -75,7 +81,8 @@ function ws_send_messages(factor) {
       '})',
       "socket.on('error', function (e) {",
       'fail(`WebSocket failed: ${e.error()}`);',
-      '})\n}\n',
+      '})',
+      '}',
     ]
   )
   return send_messages.join('\n')

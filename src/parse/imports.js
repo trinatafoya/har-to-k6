@@ -7,7 +7,7 @@ const {
 } = require('../enum')
 
 const { UnrecognizedError } = require('../error')
-const { isMultipartFormData } = require('../aid')
+const { isMultipartFormData, isWebsocket } = require('../aid')
 
 function imports(archive, result) {
   if (archive.log.entries) {
@@ -53,7 +53,7 @@ function webSocketItem(entries) {
   // This function checkes to see if the request is a ws or wss
   //  request to make sure imports has websocket true
   const check = ({ request }) =>
-    ['ws:', 'wss'].includes(request.url.slice(0, 3))
+    isWebsocket(request.url)
   return entries.find(check)
 }
 

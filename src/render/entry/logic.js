@@ -3,6 +3,7 @@ const request = require('../request')
 const websocket = require('../websocket')
 const variables = require('../variables')
 const withSleep = require('../withSleep')
+const { isWebsocket } = require('../../aid')
 
 function logic(spec) {
   let flow = [
@@ -21,7 +22,7 @@ function logic(spec) {
 function communicationProtocol(spec) {
   if (
     spec.request.address &&
-    ['ws:', 'wss'].includes(spec.request.address.slice(0, 3))
+    isWebsocket(spec.request.address)
   ) {
     return websocket(spec)
   }

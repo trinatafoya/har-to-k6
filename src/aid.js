@@ -79,6 +79,10 @@ function isMultipartFormData(entry) {
   return entry.request.postData.mimeType.includes('multipart/form-data')
 }
 
+function isWebsocket(url) {
+    ['ws:', 'wss'].includes(url.slice(0, 3))
+}
+
 module.exports = {
   seralizeURLSearchParams,
   empty,
@@ -91,4 +95,5 @@ module.exports = {
   parseContentType,
   getContentTypeValue,
   isMultipartFormData,
+  isWebsocket,
 }
