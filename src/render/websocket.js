@@ -15,8 +15,7 @@ function getFactor(request, spec) {
     factor.timeAlive = timeAlive(spec.timeConnected, spec.webSocketMessages)
     factor.addSleep = spec.addSleep
     factor.messages = changeMessageTimes(spec.webSocketMessages)
-  }
-  else{
+  } else {
     factor.messages = spec.webSocketMessages
   }
   factor.call = 'connect'
@@ -31,21 +30,21 @@ function getFactor(request, spec) {
 
 function changeMessageTimes(messages) {
   /// calculates when to sleep between messages
-  if (messages){
+  if (messages) {
     let firstTimeStartsAtZero = 0
     let firstIndexSetToZero = 0
     let messagesWithNewTimes = JSON.parse(JSON.stringify(messages))
     messagesWithNewTimes[firstIndexSetToZero].time = firstTimeStartsAtZero
-    for (let i = 1; i < messages.length; i++){
+    for (let i = 1; i < messages.length; i++) {
       messagesWithNewTimes[i].time = messages[i].time - messages[i - 1].time
     }
     return messagesWithNewTimes
- }
+  }
 }
 
 function timeAlive(timeConnected, messages) {
   /// calculates length of time when websocket is open minus the total time the messages took to run before closing the socket
-  time = timeConnected
+  let time = timeConnected
   if (messages.length > 1) {
     let firstMessageTime = messages[0].time
     let finalMessageTime = messages[messages.length - 1].time
@@ -53,7 +52,6 @@ function timeAlive(timeConnected, messages) {
     time = timeConnected - totalTimeMessagesTook
   }
   return time
-
 }
 
 function ws_send_messages(factor) {
@@ -70,9 +68,7 @@ function ws_send_messages(factor) {
     }
   }
   if (factor.addSleep && factor.timeAlive > 0) {
-    send_messages.push(
-      `sleep(${factor.timeAlive})`,
-    )
+    send_messages.push(`sleep(${factor.timeAlive})`)
   }
 
   send_messages.push(
