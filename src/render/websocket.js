@@ -88,8 +88,6 @@ function args(factor) {
   // creates list of generated code for use in main code generation
   const items = []
   items.push(factor.address)
-  // Body argument null placeholder necessary
-  items.push(`null`)
   if (factor.options) {
     items.push(factor.options)
   }
