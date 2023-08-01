@@ -1,9 +1,12 @@
 const { FlowItemType } = require('../enum')
 
 // Resolve control flow
-function flow(result) {
+function flow(result, options) {
   const processed = new Set()
   for (const entry of result.entries) {
+    if (options) {
+      entry.addSleep = options.addSleep
+    }
     item(entry, result, processed, result.flow)
   }
 }
