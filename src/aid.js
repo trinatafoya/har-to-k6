@@ -80,7 +80,7 @@ function isMultipartFormData(entry) {
 }
 
 function isWebsocket(url) {
-    ['ws:', 'wss'].includes(url.slice(0, 3))
+    return ['ws:', 'wss'].includes(url.slice(0, 3))
 }
 
 module.exports = {

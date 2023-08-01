@@ -59,3 +59,12 @@ test.serial('sleep', (t) => {
   entry({ sleep: 1200 }, makeResult())
   t.true(sleep.calledOnce)
 })
+
+test.serial('webSocketMessages', (t) => {
+  let testMessage = "Hello I am a test message"
+  let node = { time: 420, _webSocketMessages: [testMessage]}
+  let result = makeResult()
+  entry(node, result)
+  t.is(result.entries[0].timeConnected, 0.42)
+  t.is(result.entries[0].webSocketMessages[0], testMessage)
+})

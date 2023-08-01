@@ -8,7 +8,7 @@ const pkginfo = require('pkginfo')
 const { DEFAULT_CLI_OPTIONS } = require('../src/constants')
 const { VError } = require('verror')
 
-class CommandLineError extends VError { }
+class CommandLineError extends VError {}
 const BOM_REGEX = /^\uFEFF/
 
 pkginfo(module, 'version')

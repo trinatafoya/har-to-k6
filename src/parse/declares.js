@@ -10,7 +10,9 @@ const { isMultipartFormData } = require('../aid')
 
 function declares(archive, result) {
   if (archive.log.entries) {
-    result.declares.add('response')
+    if (result.imports.http) {
+      result.declares.add('response')
+    }
     const entries = archive.log.entries
     if (result.flow.find(addressFlowItem)) {
       result.declares.add('address')

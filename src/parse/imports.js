@@ -11,7 +11,6 @@ const { isMultipartFormData, isWebsocket } = require('../aid')
 
 function imports(archive, result) {
   if (archive.log.entries) {
-    result.imports.http = true
     result.imports.sleep = true
     const entries = archive.log.entries
 
@@ -46,14 +45,25 @@ function imports(archive, result) {
     if (webSocketItem(entries)) {
       result.imports.websocket = true
     }
+    if (requestItem(entries)) {
+      result.imports.http = true
+    }
   }
 }
 
 function webSocketItem(entries) {
-  // This function checkes to see if the request is a ws or wss
+  // This function checkes to see if a request is a websocket
   //  request to make sure imports has websocket true
   const check = ({ request }) =>
     isWebsocket(request.url)
+  return entries.find(check)
+}
+
+function requestItem(entries) {
+  // This function checkes to see if a request is NOT a websocket
+  //  request to make sure imports has http true
+  const check = ({ request }) =>
+    !isWebsocket(request.url)
   return entries.find(check)
 }
 
