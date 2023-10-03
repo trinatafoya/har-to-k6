@@ -30,7 +30,7 @@ function getFactor(request, spec) {
 
 function changeMessageTimes(messages) {
   /// calculates when to sleep between messages
-  if (messages) {
+  if (messages.length != 0) {
     let firstTimeStartsAtZero = 0
     let firstIndexSetToZero = 0
     let messagesWithNewTimes = JSON.parse(JSON.stringify(messages))
@@ -56,24 +56,37 @@ function timeAlive(timeConnected, messages) {
 
 function ws_send_messages(factor) {
   // generates websocket functionality code
+  let send_messages = [
+    ' function (socket) {',
+    `socket.on('message', function (mes) {`,
+    `if (mes.startsWith('44')) {`,
+    'socket.close()',
+    'fail(`Websocket Message Failure: ${mes}`)',
+    '}',
+    '})',
+  ]
   let messages = factor.messages
-  let send_messages = [' function (socket) {']
+  let timeAlive = 2
   send_messages.push("socket.on('open', function () {")
-  for (const message of messages) {
-    if (message.type === 'send') {
-      if (factor.addSleep && message.time > 0) {
-        send_messages.push(`sleep(${message.time})`)
+  if (messages) {
+    for (const message of messages) {
+      if (message.type === 'send') {
+        if (factor.addSleep && message.time > 0) {
+          send_messages.push(`sleep(${message.time})`)
+        }
+        send_messages.push(`socket.send(${JSON.stringify(message.data)})`)
       }
-      send_messages.push(`socket.send(${JSON.stringify(message.data)})`)
     }
   }
   if (factor.addSleep && factor.timeAlive > 0) {
-    send_messages.push(`sleep(${factor.timeAlive})`)
+    timeAlive = factor.timeAlive
   }
-
+  secondsToMilisecondsMultiplier = 1000
   send_messages.push(
     ...[
+      'socket.setTimeout(function () {',
       'socket.close()',
+      `}, ${timeAlive * secondsToMilisecondsMultiplier})`,
       '})',
       "socket.on('error', function (e) {",
       'fail(`WebSocket failed: ${e.error()}`);',
@@ -91,9 +104,7 @@ function args(factor) {
   if (factor.options) {
     items.push(factor.options)
   }
-  if (factor.messages) {
-    items.push(ws_send_messages(factor))
-  }
+  items.push(ws_send_messages(factor))
 
   return items
 }

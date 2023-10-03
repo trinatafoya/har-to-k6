@@ -12,7 +12,7 @@ function imports(spec) {
 }
 
 function any(spec) {
-  return Object.values(spec).find((value) => value)
+  return Object.values(spec).find(value => value)
 }
 
 function k6(spec, lines) {
@@ -27,6 +27,9 @@ function k6(spec, lines) {
     }
     if (spec.group) {
       items.push('group')
+    }
+    if (spec.websocke) {
+      items.push('fail')
     }
   }
 
