@@ -81,7 +81,7 @@ function ws_send_messages(factor) {
   if (factor.addSleep && factor.timeAlive > 0) {
     timeAlive = factor.timeAlive
   }
-  secondsToMilisecondsMultiplier = 1000
+  let secondsToMilisecondsMultiplier = 1000
   send_messages.push(
     ...[
       'socket.setTimeout(function () {',
