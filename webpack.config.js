@@ -15,10 +15,10 @@ module.exports = {
   },
   plugins: [
     process.env.BUNDLE_ANALYSIS &&
-      new BundleAnalyzerPlugin({
-        analyzerMode: 'static',
-        reportFilename: path.join(__dirname, process.env.BUNDLE_ANALYSIS),
-      }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      reportFilename: path.join(__dirname, process.env.BUNDLE_ANALYSIS),
+    }),
   ].filter((a) => a),
   module: {
     rules: [

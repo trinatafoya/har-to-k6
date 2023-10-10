@@ -28,7 +28,7 @@ function k6(spec, lines) {
     if (spec.group) {
       items.push('group')
     }
-    if (spec.websocke) {
+    if (spec.websocket) {
       items.push('fail')
     }
   }
