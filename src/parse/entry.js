@@ -25,8 +25,7 @@ function entry(node, result) {
   }
   if (node._webSocketMessages) {
     // capture all the websocket messages for later use connecting to the websocket
-    let secondsFromMilisecondsMultiplier = 0.001
-    spec.timeConnected = node.time * secondsFromMilisecondsMultiplier
+    spec.timeConnected = node.time
     spec.webSocketMessages = node._webSocketMessages
   }
 
